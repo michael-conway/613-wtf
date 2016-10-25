@@ -1,5 +1,7 @@
 .classpath
 .project
 .settings
+.metadata
 target
+Servers
 src/test/resources/testing.properties
