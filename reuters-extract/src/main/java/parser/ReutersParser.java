@@ -3,6 +3,8 @@
  */
 package parser;
 
+import java.io.IOException;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -17,8 +19,9 @@ public class ReutersParser {
 
 	/**
 	 * @param args
+	 * @throws IOException 
 	 */
-	public static void main(String[] args) {
+	public static void main(String[] args) throws IOException {
 		/* params
 		 * 0 - src path to target file
 		 * 2 - path to output file
