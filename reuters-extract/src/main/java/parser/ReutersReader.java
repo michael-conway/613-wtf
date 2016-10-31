@@ -108,7 +108,9 @@ public class ReutersReader  {
 		String allData = sb.toString();
 		ReutersInfo reutersInfo = new ReutersInfo();
 		reutersInfo.setTopics(parseDDelimited("<TOPICS>", "</TOPICS>", allData));
-		
+		reutersInfo.setPeople(parseDDelimited("<PEOPLE>", "</PEOPLE>", allData));
+		reutersInfo.setPlaces(parseDDelimited("<PLACES>", "</PLACES>", allData));
+		reutersInfo.setTitle(parseTitle(allData));
 		
 		
 	
@@ -121,6 +123,30 @@ public class ReutersReader  {
 		
 		return "";
 	}
+	
+	private String parseTitle(String data) {
+		
+		int i= data.indexOf("<TITLE>");
+		int j = -1;
+		if (i == -1) {
+			log.debug("didn't find title, returning with empty");
+			return "";
+		} else {
+			log.debug("found title");
+			j = data.indexOf("</TITLE>");
+			
+
+			log.debug("end of title:{}", j);
+			if (j == -1) {
+				log.error("didn't find end title in data");
+				throw new RuntimeException("cannot find end delim for title");
+			}
+		}
+		
+		return data.substring(i + 7, j);
+		
+	}
+
 	
 	private List<String> parseDDelimited(String startDelim, String endDelim, String data) {
 		List<String> parsed = new ArrayList<String>();
@@ -146,6 +172,27 @@ public class ReutersReader  {
 		}
 		
 		String tagBody = data.substring(i + startDelim.length(), j);
+		
+		i = tagBody.indexOf("<D>");
+		j = tagBody.indexOf("</D>");
+		int ilim = 0;
+		int jlim = 0;
+		
+		/*
+		 * march along the <D></D> tags and pick out their innards		 */
+		while(i != -1) {
+			if (j == -1) {
+				log.error("cannot find end tag for delim <D>");
+				throw new RuntimeException("cannot parse for <D></D>");
+			}
+			parsed.add(tagBody.substring(i + 3, j));
+			ilim = i+3;
+			jlim = j;
+			i = tagBody.indexOf("<D>", ilim);
+			j = tagBody.indexOf("</D>", jlim);
+			
+		}
+			
 		return parsed;
 		
 	}
