@@ -85,29 +85,69 @@ public class ReutersReader  {
 		/* have a line that starts with <REUTERS> so process it, and subsequent lines, until </RETUERS>
 		 * then return any remainder (allow wrapping)
 		 */
+		
+		StringBuilder sb = new StringBuilder();
+		
+		sb.append(line.substring(reutersIndex));
+		int last = line.indexOf("</REUTERS>", reutersIndex + 9);
+		String nextLine;
+		while (last == -1) {
+			nextLine = br.readLine();
+			if (nextLine == null) {
+				throw new IllegalStateException("cannot find end </reuters> tag");
+			}
+			last = nextLine.indexOf("</REUTERS>");
+			if (last == -1) {
+				log.debug("more data for this story:{}", nextLine);
+				sb.append(nextLine);
+			} else {
+				log.debug("at end of data for this story:{}", nextLine);
+				sb.append(nextLine.substring(0, last));
+			}
+		}
+		String allData = sb.toString();
+		ReutersInfo reutersInfo = new ReutersInfo();
+		reutersInfo.setTopics(parseDDelimited("<TOPICS>", "</TOPICS>", allData));
+		
+		
+		
 	
+		// I now have the full reuters article, scan for the various subparts
 		
-		List<String> topics = new ArrayList<String>();
-		List<String> places = new ArrayList<String>();
-		List<String> people = new ArrayList<String>();
-		String title;
-		String body;
 		
-		log.debug("line:{}", line);
-		// find topics
 		
-		int idx = line.indexOf("<TOPICS>");
 		
-		while (idx == -1) {
-			log.debug("no topics, seek to next line");
-			line = readNonNullLine();
-			idx = line.indexOf("<TOPICS>");
-		} 
-		
-		log.info("found topic:{}", line);
 		
 		
 		return "";
+	}
+	
+	private List<String> parseDDelimited(String startDelim, String endDelim, String data) {
+		List<String> parsed = new ArrayList<String>();
+		log.debug("data:{}", data);
+		log.debug("delim:{}", startDelim);
+		// find delimited data
+		
+		int i= data.indexOf(startDelim);
+		int j = -1;
+		if (i == -1) {
+			log.debug("didn't find delim, returning with empty");
+			return parsed;
+		} else {
+			log.debug("found delim");
+			j = data.indexOf(endDelim);
+			
+
+			log.debug("end of delim:{}", j);
+			if (j == -1) {
+				log.error("didn't find end delim in data:{}", endDelim);
+				throw new RuntimeException("cannot find end delim");
+			}
+		}
+		
+		String tagBody = data.substring(i + startDelim.length(), j);
+		return parsed;
+		
 	}
 
 
