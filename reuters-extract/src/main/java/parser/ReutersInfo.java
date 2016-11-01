@@ -40,6 +40,23 @@ public class ReutersInfo {
 	public void setBody(String body) {
 		this.body = body;
 	}
+	@Override
+	public String toString() {
+		StringBuilder builder = new StringBuilder();
+		builder.append("ReutersInfo [");
+		if (topics != null)
+			builder.append("topics=").append(topics).append(", ");
+		if (places != null)
+			builder.append("places=").append(places).append(", ");
+		if (people != null)
+			builder.append("people=").append(people).append(", ");
+		if (title != null)
+			builder.append("title=").append(title).append(", ");
+		if (body != null)
+			builder.append("body=").append(body);
+		builder.append("]");
+		return builder.toString();
+	}
 	
 	
 }

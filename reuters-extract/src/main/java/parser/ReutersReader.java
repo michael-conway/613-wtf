@@ -18,7 +18,7 @@ import java.io.*;
  */
 public class ReutersReader  {
 	private BufferedReader br;
-	private BufferedWriter bw;
+	private PrintWriter bw;
 	
 	public static final Logger log = LoggerFactory
 			.getLogger(ReutersReader.class);
@@ -37,7 +37,7 @@ public class ReutersReader  {
 		targetAsFile.createNewFile();
 		targetAsFile.getParentFile().mkdirs();
 		 br = new BufferedReader(new FileReader(sourceAsFile));
-		 bw = new BufferedWriter(new FileWriter(targetAsFile));
+		 bw = new PrintWriter(new FileWriter(targetAsFile));
 	}
 	
 	
@@ -62,10 +62,8 @@ public class ReutersReader  {
 				log.info("found a <REUTERS>");
 				
 				count++;
-				line = processReuters(line, start); // process until a </REUTERS> is encountered, will return the remainder here
-				if (line.length() == 0) {
-					line = br.readLine();
-				} // otherwise, loop back up and consume rest of the remaining line
+				processReuters(line, start); // process until a </REUTERS> is encountered, will return the remainder here
+				line = br.readLine();
 			} else { 
 				log.warn("skipping:{}", line);
 				line = br.readLine();
@@ -81,7 +79,7 @@ public class ReutersReader  {
 		
 	}
 	
-	private String processReuters(String line, int reutersIndex) throws IOException {
+	private void processReuters(String line, int reutersIndex) throws IOException {
 		/* have a line that starts with <REUTERS> so process it, and subsequent lines, until </RETUERS>
 		 * then return any remainder (allow wrapping)
 		 */
@@ -105,6 +103,8 @@ public class ReutersReader  {
 				sb.append(nextLine.substring(0, last));
 			}
 		}
+		// I now have the full reuters article, scan for the various subparts
+
 		String allData = sb.toString();
 		ReutersInfo reutersInfo = new ReutersInfo();
 		reutersInfo.setTopics(parseDDelimited("<TOPICS>", "</TOPICS>", allData));
@@ -112,16 +112,19 @@ public class ReutersReader  {
 		reutersInfo.setPlaces(parseDDelimited("<PLACES>", "</PLACES>", allData));
 		reutersInfo.setTitle(parseTitle(allData));
 		
+		int i = allData.indexOf("<BODY>");
+		int j = allData.indexOf("</BODY>", i);
 		
-	
-		// I now have the full reuters article, scan for the various subparts
+		if (i == -1 || j == -1){
+			log.warn("cannot find BODY, discarding:{}", allData);
+			return;
+		}
 		
+		reutersInfo.setBody(allData.substring(i + 6, j));
+		writeCsv(reutersInfo);
 		
+		log.info("reutersInfo:{}", reutersInfo);
 		
-		
-		
-		
-		return "";
 	}
 	
 	private String parseTitle(String data) {
@@ -186,14 +189,51 @@ public class ReutersReader  {
 				throw new RuntimeException("cannot parse for <D></D>");
 			}
 			parsed.add(tagBody.substring(i + 3, j));
-			ilim = i+3;
 			jlim = j;
-			i = tagBody.indexOf("<D>", ilim);
-			j = tagBody.indexOf("</D>", jlim);
+			i = tagBody.indexOf("<D>", jlim);
+			j = tagBody.indexOf("</D>", jlim + 3);
 			
 		}
 			
 		return parsed;
+		
+	}
+	
+	private void writeCsv(ReutersInfo reutersInfo) {
+		/*
+		 * topic (first topic)
+		 * people (first person)
+		 * place (first place)
+		 * title
+		 * body
+		 */
+		
+		StringBuilder sb = new StringBuilder();
+		if (reutersInfo.getTopics().size() == 0) {
+			sb.append(",");
+		} else {
+			sb.append(reutersInfo.getTopics().get(0));
+			sb.append(",");
+		}
+		 
+		if (reutersInfo.getPeople().size() == 0) {
+			sb.append(",");
+		} else {
+			sb.append(reutersInfo.getPeople().get(0));
+			sb.append(",");
+		}
+		
+		if (reutersInfo.getPlaces().size() == 0) {
+			sb.append(",");
+		} else {
+			sb.append(reutersInfo.getPlaces().get(0));
+			sb.append(",");
+		}
+		
+		sb.append(reutersInfo.getTitle().replaceAll(",", "."));
+		sb.append(",");
+		sb.append(reutersInfo.getBody().replaceAll(",", "."));
+		bw.println(sb.toString());
 		
 	}
 
