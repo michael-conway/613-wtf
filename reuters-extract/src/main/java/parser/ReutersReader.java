@@ -18,7 +18,7 @@ import java.io.*;
  */
 public class ReutersReader  {
 	private BufferedReader br;
-	private PrintWriter bw;
+	private Emitter emitter;
 	
 	public static final Logger log = LoggerFactory
 			.getLogger(ReutersReader.class);
@@ -31,19 +31,18 @@ public class ReutersReader  {
 			log.error("source file does not exist");
 			throw new IllegalArgumentException("source file does not exist");
 		}
-		File targetAsFile = new File(targetFile);
-		log.info("deleting targetAsFile:{}", targetAsFile);
-		targetAsFile.delete();
-		targetAsFile.createNewFile();
-		targetAsFile.getParentFile().mkdirs();
+		
 		 br = new BufferedReader(new FileReader(sourceAsFile));
-		 bw = new PrintWriter(new FileWriter(targetAsFile));
+
+		
 	}
 	
 	
 	
 	public void parse() throws IOException {
 		log.info("parse()");
+		emitter.generateHeaders();
+
 		
 	    String line = br.readLine();
 	    int count = 0;
@@ -71,8 +70,7 @@ public class ReutersReader  {
 			}
 		}
 		
-		bw.flush();
-		bw.close();
+		
 		br.close();
 		log.info("parsed {} reuters", count);
 		
@@ -121,7 +119,7 @@ public class ReutersReader  {
 		}
 		
 		reutersInfo.setBody(allData.substring(i + 6, j));
-		writeCsv(reutersInfo);
+		outputData(reutersInfo);
 		
 		log.info("reutersInfo:{}", reutersInfo);
 		
@@ -199,45 +197,9 @@ public class ReutersReader  {
 		
 	}
 	
-	private void writeCsv(ReutersInfo reutersInfo) {
-		/*
-		 * topic (first topic)
-		 * people (first person)
-		 * place (first place)
-		 * title
-		 * body
-		 */
-		
-		StringBuilder sb = new StringBuilder();
-		if (reutersInfo.getTopics().size() == 0) {
-			sb.append(",");
-		} else {
-			sb.append(reutersInfo.getTopics().get(0));
-			sb.append(",");
-		}
-		 
-		if (reutersInfo.getPeople().size() == 0) {
-			sb.append(",");
-		} else {
-			sb.append(reutersInfo.getPeople().get(0));
-			sb.append(",");
-		}
-		
-		if (reutersInfo.getPlaces().size() == 0) {
-			sb.append(",");
-		} else {
-			sb.append(reutersInfo.getPlaces().get(0));
-			sb.append(",");
-		}
-		
-		sb.append(reutersInfo.getTitle().replaceAll(",", "."));
-		sb.append(",");
-		sb.append(reutersInfo.getBody().replaceAll(",", "."));
-		bw.println(sb.toString());
-		
+	private void outputData(ReutersInfo reutersInfo) {
+		emitter.emitDocument(reutersInfo);
 	}
-
-
 
 	private String readNonNullLine() throws IOException {
 		String line;
@@ -246,6 +208,18 @@ public class ReutersReader  {
 			throw new RuntimeException("invalid file, no topic found");
 		}
 		return line;
+	}
+
+
+
+	public Emitter getEmitter() {
+		return emitter;
+	}
+
+
+
+	public void setEmitter(Emitter emitter) {
+		this.emitter = emitter;
 	}
 	
 	
