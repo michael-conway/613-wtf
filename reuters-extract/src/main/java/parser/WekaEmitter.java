@@ -48,29 +48,40 @@ public class WekaEmitter extends Emitter {
 		
 		StringBuilder sb = new StringBuilder();
 		if (reutersInfo.getTopics().size() == 0) {
-			sb.append(",");
+			sb.append("?,");
 		} else {
+			sb.append('\'');
 			sb.append(reutersInfo.getTopics().get(0));
+			sb.append('\'');
 			sb.append(",");
 		}
 		 
 		if (reutersInfo.getPeople().size() == 0) {
-			sb.append(",");
+			sb.append("?,");
 		} else {
+			sb.append('\'');
 			sb.append(reutersInfo.getPeople().get(0));
+			sb.append('\'');
 			sb.append(",");
 		}
 		
 		if (reutersInfo.getPlaces().size() == 0) {
-			sb.append(",");
+			sb.append("?,");
 		} else {
+			sb.append('\'');
 			sb.append(reutersInfo.getPlaces().get(0));
+			sb.append('\'');
 			sb.append(",");
 		}
-		
-		sb.append(reutersInfo.getTitle().replaceAll(",", "."));
+		sb.append('\'');
+		sb.append(reutersInfo.getTitle().replaceAll(",", ".").replaceAll("\'", " ").replaceAll("\"", " "));
+		sb.append('\'');
+
 		sb.append(",");
-		sb.append(reutersInfo.getBody().replaceAll(",", "."));
+		sb.append('\'');
+		sb.append(reutersInfo.getBody().replaceAll(",", ".").replaceAll("\'", " ").replaceAll("\"", " "));
+		sb.append('\'');
+
 		bw.println(sb.toString());
 		
 	}
@@ -85,11 +96,11 @@ public class WekaEmitter extends Emitter {
 	@Override
 	public void generateHeaders() {
 		bw.println("@relation wekaEmitter" + System.currentTimeMillis());
-		bw.println("@attribute topic");
-		bw.println("@attribute person");
-		bw.println("@attribute place");
-		bw.println("@attribute title");
-		bw.println("@attribute body");
+		bw.println("@attribute topic string");
+		bw.println("@attribute person string");
+		bw.println("@attribute place string");
+		bw.println("@attribute title string");
+		bw.println("@attribute body string");
 		bw.println("@data");
 	}
 	
