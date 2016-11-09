@@ -6,14 +6,14 @@ import java.io.IOException;
 
 import org.junit.Test;
 
-public class ReutersReaderWekaTest {
+public class ReutersReaderDocTest {
 
 	@Test
 	public void testParse() throws IOException {
 		String sourcePath = "/home/mconway/Documents/text-mining/reuters/reut2-000.sgm";
-		String targetPath = "/home/mconway/temp/csv/reut2-000.aff";
+		String targetPath = "/home/mconway/temp/doc";
 		ReutersReader reader = new ReutersReader(sourcePath, targetPath);
-		Emitter emitter = new WekaEmitter(targetPath);
+		Emitter emitter = new DocEmitter(targetPath, "doc", ".txt");
 		reader.setEmitter(emitter);
 		reader.parse();
 	}
