@@ -9,13 +9,14 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
+ * Parse into a csv file
  * @author mconway
  *
  */
-public class ReutersParser {
+public class ReutersParserCsv {
 	
 	public static final Logger log = LoggerFactory
-			.getLogger(ReutersParser.class);
+			.getLogger(ReutersParserCsv.class);
 
 	/**
 	 * @param args
@@ -34,6 +35,7 @@ public class ReutersParser {
 		log.info("args:{}", args);
 		
 		ReutersReader reader = new ReutersReader(args[0], args[1]);
+		CsvEmitter emitter = new CsvEmitter(args[1]);
 		reader.parse();
 	}
 
