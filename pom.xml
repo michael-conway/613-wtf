@@ -17,7 +17,11 @@
 	</properties>
 	
 	<repositories>
-		
+		<repository>
+			<id>mahout</id>
+			<name>mahout</name>
+			<url>http://repo.spring.io/plugins-release</url>
+		</repository>
 	</repositories>
 	<distributionManagement>
 		<repository>
@@ -25,6 +29,7 @@
 			<name>internal.repo</name>
 			<url>file://${git.repo.root}/releases</url>
 		</repository>
+		
 		<snapshotRepository>
 			<id>internal.repo.snapshot</id>
 			<name>internal.repo.snapshot</name>
@@ -100,6 +105,11 @@
 			</dependency>
 			<dependency>
 				<groupId>org.slf4j</groupId>
+				<artifactId>slf4j-simple</artifactId>
+				<version>${sl4j.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.slf4j</groupId>
 				<artifactId>slf4j-log4j12</artifactId>
 				<version>${sl4j.version}</version>
 			</dependency>
@@ -111,6 +121,7 @@
 			<groupId>org.slf4j</groupId>
 			<artifactId>slf4j-api</artifactId>
 		</dependency>
+		
 		<dependency>
 			<groupId>org.slf4j</groupId>
 			<artifactId>slf4j-log4j12</artifactId>
@@ -202,7 +213,7 @@
 		</plugins>
 	</build>
 	<modules>
-		
 		<module>reuters-extract</module>
+		<module>tfidf-calc</module>
 	</modules>
 </project>
