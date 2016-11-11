@@ -61,4 +61,17 @@ public class WordnetCaller {
         List<String> stemmedWords = stemmer.findStems(wordStr, POS.NOUN);
         return stemmedWords.get(0);
     }
+
+    public String[] synsetWordsToStringArray(ISynset syn) {
+        // make an array of Strings to store each word in the synset in
+        String[] wordsString = new String[syn.getWords().size()];
+        List<IWord> words = syn.getWords();
+        int i  = 0;
+
+        for (IWord word : words) {
+            wordsString[i] = word.getLemma();
+            i++;
+        }
+        return wordsString;
+    }
 }

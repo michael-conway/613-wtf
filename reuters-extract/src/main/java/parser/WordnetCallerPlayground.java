@@ -1,6 +1,10 @@
 package parser;
 
+import edu.mit.jwi.item.ISynset;
+import edu.mit.jwi.item.IWord;
+
 import java.io.IOException;
+import java.util.List;
 
 public class WordnetCallerPlayground {
 		
@@ -13,6 +17,8 @@ public class WordnetCallerPlayground {
             // have to give it a valid path to the wordnet library download
 			String wnhome = "/Applications/WordNet-3.0/";
 			WordnetCaller wnCaller = new WordnetCaller(wnhome);
-			wnCaller.getSynonyms("libraries");
+			wnCaller.getSynonyms("explosion");
+            ISynset[] synsets = wnCaller.getSynsets("explosion");
+            String[] synsetWords = wnCaller.synsetWordsToStringArray(synsets[0]);
 		}
 }
