@@ -1,3 +1,4 @@
+package parser;
 
 public class cosineSimilarity {
 
@@ -12,7 +13,7 @@ public class cosineSimilarity {
 			
 			innerProduct += docVector1[i]*docVector2[i];
 			doc1Mag += Math.pow(docVector1[i], 2);
-			doc2Mag += Math.pow(doc2Mag[i], 2);
+			doc2Mag += Math.pow(docVector2[i], 2);
 			
 		}
 		
@@ -27,7 +28,7 @@ public class cosineSimilarity {
 			return 0.0;
 		}
 		
-		
+		return cosineSimilarity;
 		
 	}
 	
@@ -43,7 +44,7 @@ public class cosineSimilarity {
 				newDocVector2[i] = docVector2[i];
 			}
 			System.out.println("Doc1 larger");
-			System.out.println(docVector1.toString());
+		
 			return calculateCosineSimilarity(docVector1,newDocVector2);
 		}
 		
@@ -52,7 +53,7 @@ public class cosineSimilarity {
 			double[] newDocVector1 = new double[docVector2.length];
 			
 			for(int i = 0; i < newDocVector1.length; i++){
-				newDocVector[i] = 0.0;
+				newDocVector1[i] = 0.0;
 			}
 			for(int i = 0; i < docVector1.length; i++ ){
 				newDocVector1[i] = docVector1[i];
