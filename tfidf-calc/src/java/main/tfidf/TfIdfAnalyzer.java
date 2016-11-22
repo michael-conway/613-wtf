@@ -3,9 +3,11 @@
  */
 package tfidf;
 
+import java.io.File;
 import java.io.IOException;
 import java.util.List;
 
+import org.apache.commons.io.FileUtils;
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.fs.FileSystem;
 import org.apache.hadoop.fs.Path;
@@ -37,11 +39,10 @@ public class TfIdfAnalyzer {
 
 	public static void main(String args[]) throws Exception {
 
-		TfIdfAnalyzer tester = new TfIdfAnalyzer();
+		TfIdfAnalyzer tester = new TfIdfAnalyzer("/home/mconway/temp/tfidf/", new Configuration(), "/home/mconway/temp/doc");
 
-		tester.createTestDocuments();
+		tester.loadDocumentsInParentDir();
 		tester.calculateTfIdf();
-
 		tester.printSequenceFile(tester.documentsSequencePath);
 
 		System.out.println("\n Step 1: Word count ");
@@ -65,13 +66,31 @@ public class TfIdfAnalyzer {
 				+ "tfidf/tfidf-vectors/part-r-00000"));
 
 	}
+	
+	public TfIdfAnalyzer(String outputFolder, Configuration configuration, String inputPath) {
+		this.configuration = configuration;
+		try {
+			fileSystem = FileSystem.get(configuration);
+		} catch (IOException e) {
+			throw new RuntimeException(e);
+		}
+		documentsSequencePath = new Path(outputFolder, "sequence");
+		tokenizedDocumentsPath = new Path(outputFolder,
+				DocumentProcessor.TOKENIZED_DOCUMENT_OUTPUT_FOLDER);
+		tfidfPath = new Path(outputFolder + "tfidf");
+		termFrequencyVectorsPath = new Path(outputFolder
+				+ DictionaryVectorizer.DOCUMENT_VECTOR_OUTPUT_FOLDER);
+		this.outputFolder = outputFolder;
+		this.inputFileLocation = inputPath;
+		File outputFile = new File(outputFolder);
+		outputFile.delete();
+		outputFile.mkdirs();
+	}
 
 	public TfIdfAnalyzer() throws IOException {
 
 		configuration = new Configuration();
 		fileSystem = FileSystem.get(configuration);
-
-		outputFolder = "output/";
 		documentsSequencePath = new Path(outputFolder, "sequence");
 		tokenizedDocumentsPath = new Path(outputFolder,
 				DocumentProcessor.TOKENIZED_DOCUMENT_OUTPUT_FOLDER);
@@ -80,17 +99,21 @@ public class TfIdfAnalyzer {
 				+ DictionaryVectorizer.DOCUMENT_VECTOR_OUTPUT_FOLDER);
 	}
 
-	public void createTestDocuments() throws IOException {
+	public void loadDocumentsInParentDir() throws IOException {
 		SequenceFile.Writer writer = new SequenceFile.Writer(fileSystem,
 				configuration, documentsSequencePath, Text.class, Text.class);
-
-		Text id1 = new Text("Document 1");
-		Text text1 = new Text("I saw a yellow car and a green car.");
-		writer.append(id1, text1);
-
-		Text id2 = new Text("Document 2");
-		Text text2 = new Text("You saw a red car.");
-		writer.append(id2, text2);
+		
+		File inputDir = new File(inputFileLocation);
+		if (!inputDir.exists()) {
+			throw new RuntimeException("no input file");
+		}
+		Text data;
+		
+		for (File file : inputDir.listFiles()) {
+			data = new Text(FileUtils.readFileToString(file));
+			writer.append(new Text(file.getName()), data);
+		}
+		
 
 		writer.close();
 	}
