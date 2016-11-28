@@ -17,8 +17,6 @@ public class WordnetCallerPlayground {
             // have to give it a valid path to the wordnet library download
 			String wnhome = "/Applications/WordNet-3.0/";
 			WordnetCaller wnCaller = new WordnetCaller(wnhome);
-			wnCaller.getSynonyms("explosion");
-            ISynset[] synsets = wnCaller.getSynsets("explosion");
-            String[] synsetWords = wnCaller.synsetWordsToStringArray(synsets[0]);
+			wnCaller.printInfo("explosion");
 		}
 }

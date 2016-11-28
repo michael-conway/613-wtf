@@ -31,8 +31,9 @@ public class WordnetCaller {
 
     public void getSynonyms(String wordStr) {
         // look up first sense of whatever word is passed in
-        String stemmedStr = stemWord(wordStr);
-        IIndexWord idxWord = dict.getIndexWord(stemmedStr, POS.NOUN);
+        IIndexWord idxWord = this.makeIndexWord(wordStr);
+
+
         IWordID wordID = idxWord.getWordIDs().get(0);	// 1st meaning
         IWord word = dict.getWord(wordID);
         ISynset synset = word.getSynset();
@@ -44,8 +45,8 @@ public class WordnetCaller {
     }
 
     public ISynset[] getSynsets(String wordStr) {
-        String stemmedStr = stemWord(wordStr);
-        IIndexWord idxWord = dict.getIndexWord(stemmedStr, POS.NOUN);
+        IIndexWord idxWord = this.makeIndexWord(wordStr);
+
         int senseCount = idxWord.getTagSenseCount();
         ISynset[] synsets = new ISynset[senseCount];
 
@@ -55,6 +56,10 @@ public class WordnetCaller {
             synsets[i] = word.getSynset();
         }
         return synsets;
+    }
+
+    public String getSynsetDefinition(ISynset syn) {
+        return syn.getGloss();
     }
 
     public String stemWord(String wordStr) {
@@ -73,5 +78,42 @@ public class WordnetCaller {
             i++;
         }
         return wordsString;
+    }
+
+    public void printInfo(String wordStr) {
+
+        ISynset[] synsets = this.getSynsets(wordStr);
+
+        // loop through every synset and print definition plus words
+        int i = 0;
+        for (ISynset synset : synsets) {
+            System.out.println("Synset " + i + ": " + synset.getGloss());
+            printUniqueWordsInSynset(synset, wordStr);
+            i++;
+        }
+    }
+
+    public IIndexWord makeIndexWord(String wordString) {
+        String stemmedStr = stemWord(wordString);
+        IIndexWord idxWord = dict.getIndexWord(stemmedStr, POS.NOUN);
+        return idxWord;
+    }
+
+    public void printWordsInSynset(ISynset syn) {
+        for (IWord w : syn.getWords()) {
+                System.out.print(w.getLemma() + " | ");
+        }
+    }
+
+    public void printUniqueWordsInSynset(ISynset syn, String wordStr) {
+        int i = 0;
+        for (IWord w : syn.getWords()) {
+            if (!w.getLemma().equals(wordStr) && i < syn.getWords().size() - 2) {
+                System.out.print(w.getLemma() + " | ");
+                i++;
+            } else if (!w.getLemma().equals(wordStr)) {
+                System.out.println(w.getLemma());
+            }
+        }
     }
 }
