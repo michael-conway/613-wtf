@@ -40,9 +40,7 @@ public class DocEmitter extends Emitter {
 	@Override
 	public void emitDocument(ReutersInfo reutersInfo)  {
 		StringBuilder sb = new StringBuilder();
-		sb.append(outputFilePrefix);
-		sb.append(ctr++);
-		sb.append(outputFileSuffix);
+		sb.append(Constants.genDocName(ctr++));
 		File outputFile = new File(parent, sb.toString());
 		try {
 			PrintWriter pw = new PrintWriter(new FileWriter(outputFile));

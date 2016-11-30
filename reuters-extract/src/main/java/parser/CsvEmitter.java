@@ -21,6 +21,7 @@ public class CsvEmitter extends Emitter {
 	private PrintWriter bw;
 	public static final Logger log = LoggerFactory
 			.getLogger(CsvEmitter.class);
+	private int ctr = 0;
 	
 
 
@@ -71,6 +72,8 @@ public class CsvEmitter extends Emitter {
 		sb.append(reutersInfo.getTitle().replaceAll(",", "."));
 		sb.append(",");
 		sb.append(reutersInfo.getBody().replaceAll(",", "."));
+		sb.append(",");
+		sb.append(Constants.genDocName(ctr++));
 		bw.println(sb.toString());
 		
 	}

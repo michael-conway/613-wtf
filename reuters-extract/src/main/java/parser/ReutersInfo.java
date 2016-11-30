@@ -8,6 +8,7 @@ public class ReutersInfo {
 	private List<String> topics = new ArrayList<String>();
 	private List<String> places = new ArrayList<String>();
 	private List<String> people = new ArrayList<String>();
+	private String docName;
 	private String title;
 	private String body;
 	public List<String> getTopics() {
@@ -56,6 +57,12 @@ public class ReutersInfo {
 			builder.append("body=").append(body);
 		builder.append("]");
 		return builder.toString();
+	}
+	public String getDocName() {
+		return docName;
+	}
+	public void setDocName(String docName) {
+		this.docName = docName;
 	}
 	
 	

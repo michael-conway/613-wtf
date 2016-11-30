@@ -13,7 +13,7 @@ public class ReutersReaderDocTest {
 		String sourcePath = "/home/mconway/Documents/text-mining/reuters/reut2-000.sgm";
 		String targetPath = "/home/mconway/temp/doc";
 		ReutersReader reader = new ReutersReader(sourcePath, targetPath);
-		Emitter emitter = new DocEmitter(targetPath, "doc", ".txt");
+		Emitter emitter = new DocEmitter(targetPath, Constants.DOC_PREFIX, Constants.DOC_SUFFIX);
 		reader.setEmitter(emitter);
 		reader.parse();
 	}
