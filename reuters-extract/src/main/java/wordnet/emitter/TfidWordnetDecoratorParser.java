@@ -13,6 +13,8 @@ import java.io.PrintWriter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import parser.WordnetCaller;
+
 /**
  * @author mconway Read in a tfidf doc file and amend each line with the wordnet
  *         synsets
@@ -27,6 +29,7 @@ public class TfidWordnetDecoratorParser {
 	private String wordnetBasePath;
 	private BufferedReader br;
 	private PrintWriter bw;
+	private WordnetCaller wnCaller;
 
 	public TfidWordnetDecoratorParser(String tfidfInputFile,
 			String decoratedTfidfOutputFile, String wordnetBasePath) {
@@ -47,25 +50,46 @@ public class TfidWordnetDecoratorParser {
 			File targetAsFile = new File(decoratedTfidfOutputFile);
 			log.info("deleting targetAsFile:{}", targetAsFile);
 			targetAsFile.delete();
-			targetAsFile.createNewFile();
 			targetAsFile.getParentFile().mkdirs();
+			targetAsFile.createNewFile();
 			bw = new PrintWriter(new FileWriter(targetAsFile));
 		} catch (IOException e) {
 			throw new RuntimeException("unable to create reader", e);
+		}
+		
+		try {
+			wnCaller = new WordnetCaller(wordnetBasePath);
+		} catch (IOException e) {
+			log.error("cannot create wordnet caller", e);
 		}
 
 	}
 	
 	public void process() {
 		// read each line from the csv file
+		GoodWordsParser goodWordsParser = new GoodWordsParser();
 		try {
-			String line = br.readLine();
-			bw.println(line);  //header
-			line= br.readLine();
+			//String line = br.readLine();
+			//bw.println(line);  //header
+			String line= br.readLine();
 
+			GoodWordsFromTfidf goodWordsFromTfidf;
 			while (line != null) {
+				bw.println(line);
+				goodWordsFromTfidf = goodWordsParser.parseGoodWordsLine(line);
+				for (String word : goodWordsFromTfidf.getGoodWords()) {
+					String[] synsetLines = getSynsetLines(word);
+					
+					for(String synsetLine : synsetLines) {
+						putOutSynsetLine(synsetLine);
+					}
+				}
+				line = br.readLine();
+				
 				
 			}
+			
+			bw.close();
 			
 			
 		} catch (IOException e) {
@@ -74,6 +98,16 @@ public class TfidWordnetDecoratorParser {
 		} 
 		
 		
+	}
+
+	private void putOutSynsetLine(String synsetLine) {
+
+		log.debug("synsetLine:{}", synsetLine);
+		bw.println(synsetLine);
+	}
+
+	private String[] getSynsetLines(String word) {
+		return wnCaller.stringify(word);
 	}
 
 }

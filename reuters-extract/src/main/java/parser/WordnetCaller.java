@@ -46,6 +46,9 @@ public class WordnetCaller {
 
     public ISynset[] getSynsets(String wordStr) {
         IIndexWord idxWord = this.makeIndexWord(wordStr);
+        if (idxWord == null) {
+        	return new ISynset[0];
+        }
 
         int senseCount = idxWord.getTagSenseCount();
         ISynset[] synsets = new ISynset[senseCount];
@@ -64,6 +67,9 @@ public class WordnetCaller {
 
     public String stemWord(String wordStr) {
         List<String> stemmedWords = stemmer.findStems(wordStr, POS.NOUN);
+        if (stemmedWords.size() == 0) {
+        	return null;
+        }
         return stemmedWords.get(0);
     }
 
@@ -78,6 +84,38 @@ public class WordnetCaller {
             i++;
         }
         return wordsString;
+    }
+    
+    public String[] stringify(String wordStr) {
+    	 ISynset[] synsets = this.getSynsets(wordStr);
+    	 if (synsets.length == 0) {
+    		 return new String[0];
+    	 }
+    	 
+    	 StringBuilder sb;
+
+         // loop through every synset and print definition plus words
+         int i = 0;
+         String[] synsetData = new String[synsets.length];
+         for (ISynset synset : synsets) {
+        	 sb = new StringBuilder();
+        	 sb.append("Synset");
+        	 sb.append(i);
+        	 sb.append(",");
+             sb.append(synset.getGloss().replaceAll(",", " "));
+             sb.append(" ");
+             
+             for (IWord w : synset.getWords()) {
+                if (!w.getLemma().equals(wordStr)) {
+                     sb.append(w.getLemma());
+                     sb.append(" ");
+                 }
+             }
+             
+             synsetData[i] = sb.toString();
+             i++;
+         }
+         return synsetData;
     }
 
     public void printInfo(String wordStr) {
@@ -95,6 +133,9 @@ public class WordnetCaller {
 
     public IIndexWord makeIndexWord(String wordString) {
         String stemmedStr = stemWord(wordString);
+        if (stemmedStr == null) {
+        	return null;
+        }
         IIndexWord idxWord = dict.getIndexWord(stemmedStr, POS.NOUN);
         return idxWord;
     }
