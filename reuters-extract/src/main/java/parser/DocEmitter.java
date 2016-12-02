@@ -39,6 +39,14 @@ public class DocEmitter extends Emitter {
 	
 	@Override
 	public void emitDocument(ReutersInfo reutersInfo)  {
+		
+		if (reutersInfo.getTopics().size() > 0) {
+		} else if (reutersInfo.getPeople().size() > 0) {
+		} else if (reutersInfo.getPlaces().size() > 0) {
+		} else {
+			return;
+		}
+		
 		StringBuilder sb = new StringBuilder();
 		sb.append(Constants.genDocName(ctr++));
 		File outputFile = new File(parent, sb.toString());

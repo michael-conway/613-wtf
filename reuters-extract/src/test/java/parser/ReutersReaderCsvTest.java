@@ -10,7 +10,7 @@ public class ReutersReaderCsvTest {
 
 	@Test
 	public void testParse() throws IOException {
-		String sourcePath = "/home/mconway/Documents/text-mining/reuters/reut2-000.sgm";
+		String sourcePath = "/home/mconway/Documents/text-mining/reuters/reutconcat.sgm";
 		String targetPath = "/home/mconway/temp/csv/reut2-000.csv";
 		ReutersReader reader = new ReutersReader(sourcePath, targetPath);
 		Emitter csvEmitter = new CsvEmitter(targetPath);

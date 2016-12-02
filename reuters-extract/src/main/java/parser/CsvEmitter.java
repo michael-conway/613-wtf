@@ -48,26 +48,19 @@ public class CsvEmitter extends Emitter {
 		 */
 		
 		StringBuilder sb = new StringBuilder();
-		if (reutersInfo.getTopics().size() == 0) {
-			sb.append(",");
-		} else {
+		
+		
+		if (reutersInfo.getTopics().size() > 0) {
 			sb.append(reutersInfo.getTopics().get(0));
-			sb.append(",");
-		}
-		 
-		if (reutersInfo.getPeople().size() == 0) {
-			sb.append(",");
-		} else {
+		} else if (reutersInfo.getPeople().size() > 0) {
 			sb.append(reutersInfo.getPeople().get(0));
-			sb.append(",");
+		} else if (reutersInfo.getPlaces().size() > 0) {
+			sb.append(reutersInfo.getPlaces().get(0));
+		} else {
+			return;
 		}
 		
-		if (reutersInfo.getPlaces().size() == 0) {
-			sb.append(",");
-		} else {
-			sb.append(reutersInfo.getPlaces().get(0));
-			sb.append(",");
-		}
+		sb.append(",");
 		
 		sb.append(reutersInfo.getTitle().replaceAll(",", "."));
 		sb.append(",");
