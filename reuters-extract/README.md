@@ -12,3 +12,5 @@ Run TfidfAnalyzer to come up with top words for each document
 Run TopWordsPerDocAnalyzerTest to generate word lists based on tfidf stats
 
 Run TfidWordnetDecoratorParserTest to generate 'good words' from wordnet
+
+Run TrainingDocUnifierTest to pull wordnet data back into the text documents for the final csv file

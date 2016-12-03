@@ -1,7 +1,7 @@
 /**
  * 
  */
-package wordnet.emitter;
+package parser;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -14,8 +14,6 @@ import java.util.List;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import parser.CsvEmitter;
 
 /**
  * @author mconway - take the synsets and unify with the input csv file
