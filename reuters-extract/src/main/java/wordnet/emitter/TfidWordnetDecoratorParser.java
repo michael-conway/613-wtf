@@ -30,6 +30,7 @@ public class TfidWordnetDecoratorParser {
 	private BufferedReader br;
 	private PrintWriter bw;
 	private WordnetCaller wnCaller;
+	private boolean includeGlossary = false;
 
 	public TfidWordnetDecoratorParser(String tfidfInputFile,
 			String decoratedTfidfOutputFile, String wordnetBasePath) {
@@ -107,7 +108,15 @@ public class TfidWordnetDecoratorParser {
 	}
 
 	private String[] getSynsetLines(String word) {
-		return wnCaller.stringify(word);
+		return wnCaller.stringify(word, includeGlossary);
+	}
+
+	public boolean isIncludeGlossary() {
+		return includeGlossary;
+	}
+
+	public void setIncludeGlossary(boolean includeGlossary) {
+		this.includeGlossary = includeGlossary;
 	}
 
 }

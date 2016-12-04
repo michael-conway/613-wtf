@@ -9,13 +9,24 @@ import parser.TrainingDocUnfier;
 public class TrainingDocUnfierTest {
 
 	@Test
-	public void testProcess() {
+	public void testProcessWithGloss() {
 		String csvFile = "/home/mconway/temp/csv/reut2-000.csv";
-		String synsetFile = "/home/mconway/temp/goodwords/synsets.csv";
-		String outputFile = "/home/mconway/temp/final/training.csv";
+		String synsetFile = "/home/mconway/temp/goodwords/synsetswithgloss.csv";
+		String outputFile = "/home/mconway/temp/final/trainingwithgloss.csv";
 		TrainingDocUnfier unifier = new TrainingDocUnfier(csvFile, synsetFile, outputFile);
 		unifier.process();
 		
 	}
+	
+	@Test
+	public void testProcessWithoutGloss() {
+		String csvFile = "/home/mconway/temp/csv/reut2-000.csv";
+		String synsetFile = "/home/mconway/temp/goodwords/synsetsnogloss.csv";
+		String outputFile = "/home/mconway/temp/final/trainingwithoutgloss.csv";
+		TrainingDocUnfier unifier = new TrainingDocUnfier(csvFile, synsetFile, outputFile);
+		unifier.process();
+		
+	}
+
 
 }

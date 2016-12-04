@@ -65,6 +65,8 @@ public class TrainingDocUnfier {
 
 		// read csv into a list
 		log.info("build csv list in mem");
+		String header = "topic,title,text,docname";
+		bw.println(header);
 		String line;
 		try {
 			line = csvReader.readLine();
@@ -75,7 +77,9 @@ public class TrainingDocUnfier {
 			}
 
 		} catch (IOException e) {
-			log.error(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>error reading csvline", e);
+			log.error(
+					">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>error reading csvline",
+					e);
 			throw new RuntimeException("unable to read csv lines");
 		}
 
@@ -106,16 +110,15 @@ public class TrainingDocUnfier {
 					fileAndSynset.getFileName());
 			return;
 		}
-		
+
 		log.info("found csv line:{}", foundLine);
-		
-		
+
 		String[] t = foundLine.split(",");
 		if (t.length != 4) {
 			log.error("unknown number of parameters in csv line:{} t");
 			throw new RuntimeException("unknown number of params in csv line");
 		}
-		
+
 		StringBuilder sb = new StringBuilder();
 		sb.append(t[0]); // topic
 		sb.append(",");
@@ -123,10 +126,10 @@ public class TrainingDocUnfier {
 		sb.append(",");
 		sb.append(t[2]); // text
 		sb.append(" ");
-		
+
 		// insert wordnet data
-		
-		for(String wnline: fileAndSynset.getSynsetData()) {
+
+		for (String wnline : fileAndSynset.getSynsetData()) {
 			sb.append(wnline);
 			sb.append(" ");
 		}
@@ -181,11 +184,11 @@ public class TrainingDocUnfier {
 				// have synset lines to process
 				String[] t = line.split(",");
 				if (t.length < 2) {
-					log.error("cannot parse synset line:{}", line);
-					throw new RuntimeException("exception parsing synset line");
-				}
+					log.warn("cannot parse synset line:{}", line);
+				} else {
 
-				fileAndSynset.getSynsetData().add(t[1]);
+					fileAndSynset.getSynsetData().add(t[1]);
+				}
 				line = synsetReader.readLine();
 
 			}
