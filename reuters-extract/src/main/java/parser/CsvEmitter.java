@@ -36,6 +36,11 @@ public class CsvEmitter extends Emitter {
 		
 	}
 	
+	public void addHeader() {
+		String header = "topic,title,text,docname";
+		bw.println(header);
+	}
+	
 	
 	@Override
 	public void emitDocument(ReutersInfo reutersInfo) {

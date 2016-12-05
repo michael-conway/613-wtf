@@ -18,4 +18,15 @@ public class ReutersReaderCsvTest {
 		reader.parse();
 	}
 
+	
+	@Test
+	public void testParseTestSet() throws IOException {
+		String sourcePath = "/home/mconway/Documents/text-mining/reuters/reutconcattest.sgm";
+		String targetPath = "/home/mconway/temp/csv/reut-test.csv";
+		ReutersReader reader = new ReutersReader(sourcePath, targetPath);
+		CsvEmitter csvEmitter = new CsvEmitter(targetPath);
+		reader.setEmitter(csvEmitter);
+		csvEmitter.addHeader();
+		reader.parse();
+	}
 }
